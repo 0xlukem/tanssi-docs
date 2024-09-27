@@ -3,7 +3,7 @@
 </span>
     <span data-ty="input" data-ty-prompt=""> 🌈 Welcome to RainbowKit!</span>
     <span data-ty="input" data-ty-prompt="✔ What is the name of your project?"> rainbow-demo</span>
-    <span data-ty="input" data-ty-prompt=""> 🚀 Creating a new RainbowKit app in /Users/dawnkelly/Documents/papermoon_builds/RainbowKit/add-rainbow-kit/rainbow-demo</span>
+    <span data-ty="input" data-ty-prompt=""> 🚀 Creating a new RainbowKit app in /Users/papermoon/Documents/papermoon_builds/RainbowKit/add-rainbow-kit/rainbow-demo</span>
     <span data-ty="input" data-ty-prompt=""> 📦 Installing dependencies with npm. This could take a while.</span>
     <span data-ty="input" data-ty-prompt="">📚 Initializing git repository</span>
     <span data-ty="input" data-ty-prompt=""> 🌈 Done! Thanks for using RainbowKit 🙏</span>

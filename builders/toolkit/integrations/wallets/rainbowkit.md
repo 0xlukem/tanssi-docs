@@ -7,7 +7,7 @@ description: Learn how to integrate RainbowKit into your appchain created with T
 
 ## Introduction 
 
-[RainbowKit](https://www.rainbowkit.com/docs/introduction){target=\_blank} RainbowKit is a React library that adds wallet connection capabilities to a dApp. It supports numerous wallets and enables features such as switching connection chains, ENS address resolution, and balance display out-of-the-box. RainbowKit offers customization options for all EVM-compatible chains, making it possible to easily connect mobile wallets to your appchain.
+[RainbowKit](https://www.rainbowkit.com/docs/introduction){target=\_blank} RainbowKit is a React library that adds wallet connection capabilities to a dApp. It supports numerous wallets and enables features such as switching connection chains, ENS address resolution, and balance display out-of-the-box. RainbowKit offers customization options for all EVM-compatible chains, making it possible to easily connect wallets to your appchain.
 
 
 RainbowKit bundles together mulitple tools to simplify adding wallet connection to your dApp: 
@@ -95,24 +95,24 @@ If you want to add RainbowKit to an existing React application, you can complete
 
 The following guide assumes you have:
 
-- An existing dApp built with [React](https://react.dev/){target=\_blank} and you want to use the manual setup to connect to a mobile wallet via RainbowKit
+- An existing dApp built with [React](https://react.dev/){target=\_blank} and you want to use the manual setup to connect to a wallet via RainbowKit
 
-    - The [RainbowKit examples repository](https://github.com/rainbow-me/rainbowkit/tree/main/examples){target=\_blank} includes templates for multiple React frameworks
+- The [RainbowKit examples repository](https://github.com/rainbow-me/rainbowkit/tree/main/examples){target=\_blank} includes templates for multiple React frameworks
     
-    - To follow this guide, visit [Next.js](https://nextjs.org/docs){target=\_blank} and follow the **Automatic Installation** instructions, selecting Typescript and the App Router options during setup 
+ - To follow this guide, visit [Next.js](https://nextjs.org/docs){target=\_blank} and follow the **Automatic Installation** instructions, selecting Typescript and the App Router options during setup 
 
-- A mobile wallet that supports custom networks, as we will be adding the Tanssi Dancebox appchain manually
+- A wallet that supports custom networks, as we will be adding the Tanssi Dancebox appchain manually
 
 - A WalletConnect `projectId` - every dApp relying on WalletConnect is required to have an associated `projectId`. It is free to create an account, and you can instantly generate an ID
 
-To obtain a WalletConnect `projectId`:
+    To obtain a WalletConnect `projectId`:
 
-1. Visit [WalletConnect Cloud](https://cloud.walletconnect.com/){target=\_blank}
-2. On the **Projects** page, select **Create** 
-3. Add your project information (you can leave **Homepage URL** blank if you have not deployed your dApp)
-4. Select the **AppKit** SDK
-5. Select your coding environment or platform (select React for this guide)
-6. Locate your `projectId` in the left menu. You can also find it in the **Get started** code snippet of the WalletConnect Quickstart
+    1. Visit [WalletConnect Cloud](https://cloud.walletconnect.com/){target=\_blank}
+    2. On the **Projects** page, select **Create** 
+    3. Add your project information (you can leave **Homepage URL** blank if you have not deployed your dApp)
+    4. Select the **AppKit** SDK
+    5. Select your coding environment or platform (select React for this guide)
+    6. Locate your `projectId` in the left menu. You can also find it in the **Get started** code snippet of the WalletConnect Quickstart
  
 ### Getting Started {: #getting-started }
 
@@ -159,7 +159,7 @@ Next, start the development server to create a local dApp instance:
 
 If you navigate to [http://localhost:3000](http://localhost:3000){target=\_blank},  you should see the starter Next.js application in your browser.
 
-To test the RainbowKit connection, you will use the MetaMask mobile app. Make sure you have established a connection to the Dancebox appchain in your MetaMask wallet.
+To test the RainbowKit connection, you will use the MetaMask app. Make sure you have established a connection to the Dancebox appchain in your MetaMask wallet.
 
 To add the Dancebox appchain to MetaMask:
 
@@ -173,8 +173,7 @@ To add the Dancebox appchain to MetaMask:
 
 For detailed instructions on connecting MetaMask to the Dancebox appchain, refer to the [Tanssi Documentation](https://docs.tanssi.network/builders/toolkit/ethereum-api/wallets/metamask/#connect-metamask-to-evm-appchain){target=\_blank}.
 
-Once connected, you can safely add your `projectId` to your application.
-Next, safely add your `projectId` to your application: 
+Once connected, you can safely add your `projectId` to your application:
 
 1. Create a `.env.local` file in the root directory of your project
 
@@ -192,19 +191,18 @@ Next, safely add your `projectId` to your application:
 
 In the next section, you will use this stored `projectId` when setting up the `wagmi` config.
 
-### Connect DApp to MetaMask Mobile 
+### Connect DApp to MetaMask 
 
-Now that we have our development environment set up and MetaMask configured for the Dancebox appchain, we'll configure our dApp to connect with MetaMask's mobile wallet using RainbowKit and implement Sign-In with Ethereum (SIWE) authentication. This process involves several key steps:
+Now that we have our development environment set up and MetaMask configured for the Dancebox appchain, we'll configure our dApp to connect with MetaMask's wallet using RainbowKit. This process involves several key steps:
 
 1. Import RainbowKit, Wagmi, and TanStack Query
 2. Setup configuration for Wagmi
 3. Wrap your application with providers
-4. Implement SIWE authentication
-5. Add the connect button
+4. Add the connect button
 
 ### Import RainbowKit, Wagmi, and TanStack Query
 
-Ensure you are in your project's root directory, then create a new file called `wagmi.ts`. This file will contain the imports and configuration needed to connect your dApp to mobile wallets and interact with blockchains.
+Ensure you are in your project's root directory, then create a new file called `wagmi.ts`. This file will contain the imports and configuration needed to connect your dApp to wallets and interact with blockchains.
 
 ```bash
 touch wagmi.ts
@@ -212,6 +210,7 @@ touch wagmi.ts
 In `wagmi.ts`, import the necessary libraries and define Dancebox as the supported chain:
 
 ```ts title="wagmi.ts"
+import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
@@ -241,14 +240,14 @@ export const config = getDefaultConfig({
 
 ### Wrap Your Application with Providers
 
-Next, create a file named providers.tsx to wrap your application with the necessary providers: WagmiProvider, RainbowKitSiweProvider, and QueryClientProvider.
+Next, create a file named providers.tsx to wrap your application with the necessary providers: WagmiProvider, and QueryClientProvider.
 
 ```bash
 cd app &&
 touch providers.tsx
 ```
 
-Open `providers.tsx` add the following code to manage the providers and enable SIWE authentication for users who sign in with Ethereum:
+Open `providers.tsx` add the following code to manage the providers
 
 ```ts title="providers.tsx"
 --8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/providers.tsx'
@@ -259,48 +258,19 @@ Now locate the `layout.tsx` file inside the `app` directory and modify the code 
 ```ts title="layout.tsx"
 --8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/layout.tsx'
 ```
-This ensures that your app is wrapped with all necessary providers, including SIWE authentication, wagmi, and TanStack Query for state management.
-
-### SIWE Authentication Setup
-
-For SIWE (Sign-In with Ethereum) authentication, users can sign in securely with their Ethereum wallets. You can check if a user is connected using wagmi's `useAccount` hook.
-
-```ts title="app/components/WelcomeDashboard.tsx"
---8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/WelcomeDashboard.tsx'
-```
-This `WelcomeDashboard` component uses the useAccount hook from wagmi to determine if a wallet is connected and display the appropriate message.
-To use this component in your main page, you can import it and add it to your layout:
-
-```ts title="app/page.tsx"
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import WelcomeDashboard from './components/WelcomeDashboard';
-
-export default function Home() {
-  return (
-    <div>
-      <h1>Welcome to My Tanssi DApp</h1>
-      <ConnectButton />
-      <WelcomeDashboard />
-    </div>
-  );
-}
-```
+This ensures that your app is wrapped with all necessary providers, including wagmi, and TanStack Query for state management.
 
 ### Add the Connect Button
 
 RainbowKit offers a `ConnectButton` component, which renders the **Connect** and **Disconnect** buttons and UI elements for switching chains. This example imports the `ConnectButton` into the existing `page.tsx` file for simplicity, but you may want to add it to an element like a **Header** or **Navbar** so it appears at the top of each page. Update the code in `page.tsx` as follows:
 
 ```ts title="page.tsx"
-// app/page.tsx
-import styles from './page.module.css';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import WelcomeDashboard from './components/WelcomeDashboard';
 
 export default function Home() {
   return (
-    <div className={styles.main}>
-      <ConnectButton /> // The ConnectButton allows users to connect and disconnect wallets
-      <WelcomeDashboard />
+    <div className="flex h-screen items-center justify-center">
+      <ConnectButton />
     </div>
   );
 }
@@ -323,10 +293,12 @@ RainbowKit will connect by default to the first chain supplied to Wagmi in the c
 Instead, you can use the `initialChain` prop that is part of the `RainbowKitProvider` element to define which chain the wallet should initially connect to when the user selects **Connect Wallet**. Open your `providers.tsx` file and update the code to configure the `initialChain` prop. For your custom Dancebox appchain, you'll pass the chain object you defined earlier:
 
 ```Ts title="providers.tsx"
+'use client';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
-import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { config, danceboxChain } from '../src/wagmi'; // Make sure this import matches your file structure
+import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+import { config, danceboxChain } from '../wagmi';
 
 const queryClient = new QueryClient();
 
@@ -334,13 +306,21 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider initialChain={danceboxChain}>
+        <RainbowKitProvider
+          initialChain={danceboxChain}
+          theme={darkTheme({
+            accentColor: '#189B9B', // Tanssi accent color
+            accentColorForeground: 'white',
+            borderRadius: 'medium',
+            fontStack: 'system',
+            overlayBlur: 'small'
+          })}
+        >
           {children}
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
-}
 
 ```
 
@@ -405,9 +385,9 @@ RainbowKit includes a **Disconnect** button out of the box. To open the modal, s
 
 ![Built in Disconnect button](/images/builders/toolkit/integrations/wallets/rainbowkit/rainbowkit-2.webp)
 
-### Disconnect from MetaMask Mobile {: #disconnect-from-metamask-mobile }
+### Disconnect from MetaMask  {: #disconnect-from-metamask }
 
-Some users prefer to disconnect from their mobile wallet rather than use a button within a dApp. To use this method: 
+Some users prefer to disconnect from their wallet rather than use a button within a dApp. To use this method: 
 
 1. Select the MetaMask extension in your browser to open the modal
 2. Select the three dots in the upper right corner of the MetaMask modal
