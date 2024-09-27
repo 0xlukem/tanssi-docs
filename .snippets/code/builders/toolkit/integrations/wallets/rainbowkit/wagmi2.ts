@@ -1,4 +1,3 @@
-
 import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
@@ -21,9 +20,7 @@ export const danceboxChain = {
 
 export const config = getDefaultConfig({
   appName: 'My Tanssi Appchain',
-  projectId: 'TODO: get project id from...',
+  projectId: 'process.env.NEXT_PUBLIC_PROJECT_ID',
   chains: [danceboxChain], 
   ssr: true,
 });
-
-

@@ -71,20 +71,16 @@ Your starting screen should look like this:
 
 ![Scaffolded RainbowKit project landing page](/images/builders/toolkit/integrations/wallets/rainbowkit/rainbowkit-1.webp)
 
-Open the project in your code editor and take a look at the directory and file structure, making note of the `wagmi.ts` file. This file is where you can customize which chains to include in the list of networks users can connect to through your dApp. 
+Open the project in your code editor and take a look at the directory and file structure, paying particular attention to the `wagmi.ts` file. This file is where you can configure which chains are included in the list of networks that users can connect to through your dApp.
 
-To customize your appchain's supported networks, update the `wagmi.ts` file to include the appchain created on Tanssi. For example, if your appchain uses the Tanssi default network or another EVM-compatible chain, you can adjust the chain configurations as needed.
-
-In the following sections, you will learn how to configure the appchain network settings and further customize RainbowKit to fit your Tanssi-based appchain.
-
-The Tanssi demo appchain (Dancebox) is not on the list of default supported networks. You can customize your dApp's supported networks in the `wagmi.ts` file by updating the chain entry points imported from `wagmi/chains` and passed to the `chains` property when `config` is defined.
+Since Dancebox is a custom appchain on Tanssi, it cannot be imported directly from `wagmi/chains`. Instead, you need to manually define the chain in the `wagmi.ts` file. For example, if your appchain uses the Tanssi demo appchain (Dancebox) or another EVM-compatible chain, you can add the necessary configurations manually.
 
 Here is the configuration for the Dancebox demo appchain on Tanssi:
 
 === "Dancebox Demo Appchain"
-
+```js title="src/wagmi.ts"
 --8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/wagmi.ts'
-
+```
 To add support for the Dancebox appchain on Tanssi, update `wagmi.ts` as shown above. You will learn how to generate the `projectId` value for WalletConnect in the next section.
 
 ## Manual Setup 
@@ -210,32 +206,7 @@ touch wagmi.ts
 In `wagmi.ts`, import the necessary libraries and define Dancebox as the supported chain:
 
 ```ts title="wagmi.ts"
-import '@rainbow-me/rainbowkit/styles.css';
-import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-
-import { type Chain } from 'viem'
-
-export const danceboxChain = {
-  id: 5678,
-  name: "Dancebox",
-  nativeCurrency: { name: "TANGO", symbol: "TANGO", decimals: 18 },
-  rpcUrls: {
-    default: { http: ['https://fraa-dancebox-3001-rpc.a.dancebox.tanssi.network'] }
-  },
-  blockExplorers: {
-    default: { name: 'Dancebox Explorer', url: 'https://fra-dancebox-3001-bs.a.dancebox.tanssi.network/' }
-  },
-} as const satisfies Chain
-
-
-export const config = getDefaultConfig({
-  appName: 'My Tanssi Appchain',
-  projectId: 'process.env.NEXT_PUBLIC_PROJECT_ID',
-  chains: [danceboxChain], 
-  ssr: true,
-});
+--8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/wagmi2.ts'
 ```
 
 ### Wrap Your Application with Providers
@@ -265,15 +236,7 @@ This ensures that your app is wrapped with all necessary providers, including wa
 RainbowKit offers a `ConnectButton` component, which renders the **Connect** and **Disconnect** buttons and UI elements for switching chains. This example imports the `ConnectButton` into the existing `page.tsx` file for simplicity, but you may want to add it to an element like a **Header** or **Navbar** so it appears at the top of each page. Update the code in `page.tsx` as follows:
 
 ```ts title="page.tsx"
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-
-export default function Home() {
-  return (
-    <div className="flex h-screen items-center justify-center">
-      <ConnectButton />
-    </div>
-  );
-}
+--8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/pages.tsx'
 ```
 
 If you haven't already, start the development server and spin up a local version of your dApp. Your home page should now include a visible **Connect Wallet** button. Click the button to test the connection. You should now see the RainbowKit modal with options to get or connect a wallet. Select **MetaMask** and follow the prompts to connect your wallet.
@@ -290,38 +253,10 @@ Not only does RainbowKit abstract away the complexities of managing wallet conne
 
 RainbowKit will connect by default to the first chain supplied to Wagmi in the config. If you compare the order of chains listed in `wagmi.ts` to those on the **Switch Networks** modal, you will see they are the same. If you wanted to always connect to the Dancebox appchain first, a simple fix would be to ensure it's at the top of the chain list. However, assuming this default behavior will never change is not the most reliable option.
 
-Instead, you can use the `initialChain` prop that is part of the `RainbowKitProvider` element to define which chain the wallet should initially connect to when the user selects **Connect Wallet**. Open your `providers.tsx` file and update the code to configure the `initialChain` prop. For your custom Dancebox appchain, you'll pass the chain object you defined earlier:
+Instead, you can use the `initialChain` prop that is part of the `RainbowKitProvider` element to define which chain the wallet should initially connect to when the user selects **Connect Wallet**. Open your `providers.tsx` file and update the code to configure the `initialChain` prop. For the custom Dancebox appchain, you'll pass the chain object you defined earlier:
 
 ```Ts title="providers.tsx"
-'use client';
-
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiProvider } from 'wagmi';
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
-import { config, danceboxChain } from '../wagmi';
-
-const queryClient = new QueryClient();
-
-export function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider
-          initialChain={danceboxChain}
-          theme={darkTheme({
-            accentColor: '#189B9B', // Tanssi accent color
-            accentColorForeground: 'white',
-            borderRadius: 'medium',
-            fontStack: 'system',
-            overlayBlur: 'small'
-          })}
-        >
-          {children}
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
-  );
-
+--8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/providers.tsx'
 ```
 
 By setting `initialChain={danceboxChain}`, you ensure that RainbowKit will attempt to connect to the Dancebox appchain first when a user clicks the Connect Wallet button.
@@ -333,36 +268,7 @@ RainbowKit offers three built-in theme functions: `lightTheme`, `darkTheme`, and
 RainbowKit offers three built-in theme functions: `lightTheme`, `darkTheme`, and `midnightTheme`. These theme functions return a theme object, which you can pass into the `RainbowKitProvider` prop `theme` to set custom colors, border radius, font stack, and overlay blur. 
 
 ```js title="providers.tsx"
-'use client';
-
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiProvider } from 'wagmi';
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
-import { config, danceboxChain } from '../src/wagmi';
-
-const queryClient = new QueryClient();
-
-export function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider
-          initialChain={danceboxChain}
-          theme={darkTheme({
-            accentColor: '#189B9B', // Tanssi accent color
-            accentColorForeground: 'white',
-            borderRadius: 'medium',
-            fontStack: 'system',
-            overlayBlur: 'small'
-          })}
-        >
-          {children}
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
-  );
-}
-
+--8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/providers2.tsx'
 ```
 This configuration sets a dark theme with custom properties:
 
