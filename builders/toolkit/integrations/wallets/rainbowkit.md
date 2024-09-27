@@ -5,9 +5,9 @@ description: Learn how to integrate RainbowKit into your appchain created with T
 
 # Integrate RainbowKit into a Tanssi demo apchain 
 
-## Introduction {: #introduction }
+## Introduction 
 
-[RainbowKit](https://www.rainbowkit.com/docs/introduction){target=\_blank} RainbowKit is a React library that adds wallet connection capabilities to a dApp. It supports numerous wallets and enables features such as switching connection chains, ENS address resolution, and balance display out-of-the-box. RainbowKit offers customization options for all EVM-compatible chains, making it possible to easily connect mobile wallets to your appchain creation, only if is EVM-compatible.
+[RainbowKit](https://www.rainbowkit.com/docs/introduction){target=\_blank} RainbowKit is a React library that adds wallet connection capabilities to a dApp. It supports numerous wallets and enables features such as switching connection chains, ENS address resolution, and balance display out-of-the-box. RainbowKit offers customization options for all EVM-compatible chains, making it possible to easily connect mobile wallets to your appchain.
 
 
 RainbowKit bundles together mulitple tools to simplify adding wallet connection to your dApp: 
@@ -69,7 +69,7 @@ You can now navigate to the project directory, start the development server, and
 
 Your starting screen should look like this:
 
-![Scaffolded RainbowKit project landing page](/images/builders/integrations/wallets/rainbowkit/rainbowkit-1.webp)
+![Scaffolded RainbowKit project landing page](/images/builders/toolkit/integrations/wallets/rainbowkit/rainbowkit-1.webp)
 
 Open the project in your code editor and take a look at the directory and file structure, making note of the `wagmi.ts` file. This file is where you can customize which chains to include in the list of networks users can connect to through your dApp. 
 
@@ -83,47 +83,7 @@ Here is the configuration for the Dancebox demo appchain on Tanssi:
 
 === "Dancebox Demo Appchain"
 
-```js title="src/wagmi.ts"
-import { configureChains, createClient } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public';
-
-// Define the chain manually, since "Dancebox" is not a pre-configured chain in Wagmi.
-// The chain object includes the essential parameters for any EVM-compatible chain.
-const danceboxChain = {
-  id: 5678,  // Unique chain ID for the Dancebox chain (this is specific to your appchain)
-  name: "Dancebox",  // The name of your appchain
-  network: "tanssi",  // Identifier for the network (can be customized)
-  nativeCurrency: { 
-    name: "TANGO",  // Name of the native currency used in Dancebox
-    symbol: "TANGO",  // Symbol for the currency (e.g., ETH, BTC, etc.)
-    decimals: 18,  // Number of decimal places for the currency
-  },
-  rpcUrls: {  // URLs to the RPC endpoints that allow interaction with the blockchain
-    default: "https://fraa-dancebox-3001-rpc.a.dancebox.tanssi.network",  // RPC endpoint for Dancebox
-  },
-  blockExplorers: {  // Optional: URL to the block explorer for your chain
-    default: {
-      name: "Dancebox Explorer",  // Name of the block explorer
-      url: "https://fra-dancebox-3001-bs.a.dancebox.tanssi.network/",  // URL of the block explorer
-    },
-  },
-  testnet: false,  // Indicates whether the chain is a testnet (true) or a mainnet (false)
-};
-
-// This function configures the chains that will be supported by your dApp.
-// In this case, we're using the Dancebox chain and the publicProvider for simplicity.
-const { chains, provider } = configureChains(
-  [danceboxChain],  // This is where you define which chains are supported by your dApp (in this case, Dancebox)
-  [publicProvider()]  // Specifies the provider to use; publicProvider uses public RPC endpoints
-);
-
-// Creates a Wagmi client to handle wallet connections and blockchain interactions.
-// This client is used across your dApp to manage network connections and interactions.
-const wagmiClient = createClient({
-  autoConnect: true,  // Automatically connects the user’s wallet when available
-  provider,  // The provider that was configured above, which includes Dancebox
-});
-```
+--8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/wagmi.ts'
 
 To add support for the Dancebox appchain on Tanssi, update `wagmi.ts` as shown above. You will learn how to generate the `projectId` value for WalletConnect in the next section.
 
@@ -175,6 +135,7 @@ Ensure you are in the root directory for your project, then install RainbowKit a
     ```bash
     yarn add @rainbow-me/rainbowkit wagmi viem@2.x @tanstack/react-query
     ```
+These packages provide the core functionality for wallet connections (RainbowKit), Ethereum interactions (wagmi and viem), and state management (TanStack Query).
 
 Next, start the development server to create a local dApp instance:
 
@@ -200,22 +161,17 @@ If you navigate to [http://localhost:3000](http://localhost:3000){target=\_blank
 
 To test the RainbowKit connection, you will use the MetaMask mobile app. Make sure you have established a connection to the Dancebox appchain in your MetaMask wallet.
 
-### Connecting MetaMask to Dancebox
+To add the Dancebox appchain to MetaMask:
 
-You can connect your MetaMask mobile wallet to the **Dancebox** appchain in a couple of ways.
+1. Open MetaMask and go to Settings > Networks > Add Network.
+2. Input the following information:
+   - Network Name: Dancebox
+   - RPC URL: `https://fraa-dancebox-3001-rpc.a.dancebox.tanssi.network`
+   - Chain ID: 5678
+   - Currency Symbol: TANGO
+   - Block Explorer URL: `https://fra-dancebox-3001-bs.a.dancebox.tanssi.network/`
 
-You can manually add the Dancebox appchain configurations from the **Networks** section of the **Settings** menu in MetaMask:
-
-1. Open MetaMask and go to **Settings**.
-2. Select **Networks** and click **Add Network**.
-3. Input the following information:
-   - **Network Name**: Dancebox
-   - **RPC URL**: `https://fraa-dancebox-3001-rpc.a.dancebox.tanssi.network`
-   - **Chain ID**: 5678
-   - **Currency Symbol**: TANGO
-   - **Block Explorer URL**: `https://fra-dancebox-3001-bs.a.dancebox.tanssi.network/`
-
-For more detailed wallet configurations, you can check this link: [Tanssi Documentation page](https://docs.tanssi.network/builders/toolkit/ethereum-api/wallets/metamask/#connect-metamask-to-evm-appchain){target=\_blank}.
+For detailed instructions on connecting MetaMask to the Dancebox appchain, refer to the [Tanssi Documentation](https://docs.tanssi.network/builders/toolkit/ethereum-api/wallets/metamask/#connect-metamask-to-evm-appchain){target=\_blank}.
 
 Once connected, you can safely add your `projectId` to your application.
 Next, safely add your `projectId` to your application: 
@@ -236,105 +192,208 @@ Next, safely add your `projectId` to your application:
 
 In the next section, you will use this stored `projectId` when setting up the `wagmi` config.
 
-### Connect DApp to MetaMask Mobile {: #connect-dapp-to-metamask-mobile }
+### Connect DApp to MetaMask Mobile 
 
-In the next sections, you will complete the steps needed to use RainbowKit to connect your dApp to MetaMask's mobile wallet:
+Now that we have our development environment set up and MetaMask configured for the Dancebox appchain, we'll configure our dApp to connect with MetaMask's mobile wallet using RainbowKit and implement Sign-In with Ethereum (SIWE) authentication. This process involves several key steps:
 
 1. Import RainbowKit, Wagmi, and TanStack Query
 2. Setup configuration for Wagmi
 3. Wrap your application with providers
-4. Add the connect button
+4. Implement SIWE authentication
+5. Add the connect button
 
 ### Import RainbowKit, Wagmi, and TanStack Query
 
-Ensure you are still in your project's root directory, then create a new file called `wagmi.ts`. This file will contain the imports and configuration needed to connect your dApp to mobile wallets and interact with blockchains. 
+Ensure you are in your project's root directory, then create a new file called `wagmi.ts`. This file will contain the imports and configuration needed to connect your dApp to mobile wallets and interact with blockchains.
 
 ```bash
 touch wagmi.ts
 ```
-
-=== "Moonbeam"
-
-    ```js
-    moonbeam
-    ```
-
-=== "Moonriver"
-
-    ```js
-    moonriver
-    ```
-
-=== "Moonbase Alpha"
-
-    ```js
-    moonbaseAlpha
-    ```
-
-Add the `wagmi/chains` import with `moonbeam`, `moonriver`, and `moonbaseAlpha` as the supported chains. 
+In `wagmi.ts`, import the necessary libraries and define Dancebox as the supported chain:
 
 ```ts title="wagmi.ts"
---8<-- 'code/builders/integrations/wallets/rainbowkit/wagmi.ts::5'
-```
+import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { WagmiProvider } from 'wagmi';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 
-Now, setup the `config` to include Moonbeam networks by ensuring the `chains` array matches the list of chains in the `import` statement. Finally, update the `projectId` value to use the one stored in your `.env.local` file.
+import { type Chain } from 'viem'
 
-```ts title="wagmi.ts"
---8<-- 'code/builders/integrations/wallets/rainbowkit/wagmi.ts:7:12'
+export const danceboxChain = {
+  id: 5678,
+  name: "Dancebox",
+  nativeCurrency: { name: "TANGO", symbol: "TANGO", decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://fraa-dancebox-3001-rpc.a.dancebox.tanssi.network'] }
+  },
+  blockExplorers: {
+    default: { name: 'Dancebox Explorer', url: 'https://fra-dancebox-3001-bs.a.dancebox.tanssi.network/' }
+  },
+} as const satisfies Chain
+
+
+export const config = getDefaultConfig({
+  appName: 'My Tanssi Appchain',
+  projectId: 'process.env.NEXT_PUBLIC_PROJECT_ID',
+  chains: [danceboxChain], 
+  ssr: true,
+});
 ```
 
 ### Wrap Your Application with Providers
 
-With the configuration in place, the next step is to wrap your application with the `RainbowKitProvider`, `WagmiProvider`, and `QueryClientProvider` to make them available throughout your dApp. In your terminal, navigate to the `app` directory in your project and create a file named `providers.tsx`:
+Next, create a file named providers.tsx to wrap your application with the necessary providers: WagmiProvider, RainbowKitSiweProvider, and QueryClientProvider.
 
 ```bash
 cd app &&
 touch providers.tsx
 ```
 
-Open `providers.tsx` and add the following code to define `Providers`:
+Open `providers.tsx` add the following code to manage the providers and enable SIWE authentication for users who sign in with Ethereum:
 
 ```ts title="providers.tsx"
---8<-- 'code/builders/integrations/wallets/rainbowkit/plainProviders.tsx::18'
+--8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/providers.tsx'
 ```
 
 Now locate the `layout.tsx` file inside the `app` directory and modify the code to import `Providers` and wrap the application:
 
 ```ts title="layout.tsx"
---8<-- 'code/builders/integrations/wallets/rainbowkit/layout.tsx::26'
+--8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/layout.tsx'
 ```
+This ensures that your app is wrapped with all necessary providers, including SIWE authentication, wagmi, and TanStack Query for state management.
 
-Wrapping the application in the providers makes the functionalities of RainbowKit, Wagmi, and TanStack Query available throughout your dApp. This setup gives you the flexibility to add a wallet connection button anywhere in your project. 
+### SIWE Authentication Setup
+
+For SIWE (Sign-In with Ethereum) authentication, users can sign in securely with their Ethereum wallets. You can check if a user is connected using wagmi's `useAccount` hook.
+
+```ts title="app/components/WelcomeDashboard.tsx"
+--8<-- 'code/builders/toolkit/integrations/wallets/rainbowkit/WelcomeDashboard.tsx'
+```
+This `WelcomeDashboard` component uses the useAccount hook from wagmi to determine if a wallet is connected and display the appropriate message.
+To use this component in your main page, you can import it and add it to your layout:
+
+```ts title="app/page.tsx"
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import WelcomeDashboard from './components/WelcomeDashboard';
+
+export default function Home() {
+  return (
+    <div>
+      <h1>Welcome to My Tanssi DApp</h1>
+      <ConnectButton />
+      <WelcomeDashboard />
+    </div>
+  );
+}
+```
 
 ### Add the Connect Button
 
 RainbowKit offers a `ConnectButton` component, which renders the **Connect** and **Disconnect** buttons and UI elements for switching chains. This example imports the `ConnectButton` into the existing `page.tsx` file for simplicity, but you may want to add it to an element like a **Header** or **Navbar** so it appears at the top of each page. Update the code in `page.tsx` as follows:
 
 ```ts title="page.tsx"
---8<-- 'code/builders/integrations/wallets/rainbowkit/page.tsx::11'
+// app/page.tsx
+import styles from './page.module.css';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import WelcomeDashboard from './components/WelcomeDashboard';
+
+export default function Home() {
+  return (
+    <div className={styles.main}>
+      <ConnectButton /> // The ConnectButton allows users to connect and disconnect wallets
+      <WelcomeDashboard />
+    </div>
+  );
+}
 ```
 
 If you haven't already, start the development server and spin up a local version of your dApp. Your home page should now include a visible **Connect Wallet** button. Click the button to test the connection. You should now see the RainbowKit modal with options to get or connect a wallet. Select **MetaMask** and follow the prompts to connect your wallet.
 
-The current configuration defaults to connecting to Moonbeam and displaying the current network, native token balance, an ENS or fallback avatar, and the connected wallet address. Select the arrow next to **Moonbeam** to open the **Switch Networks** modal. Select **Moonbase Alpha** and sign the MetaMask transaction to authorize switching networks. You should now see **Moonbase Alpha** listed as the connected network with your DEV token balance, avatar, and account number displayed. 
+The current configuration defaults to connecting to Dancebox and displays the current network, the native token balance, and the connected wallet address. If multiple networks are supported, you can select the arrow next to Dancebox to open the Switch Networks modal. Here, users can select a different network and authorize the switch.
 
-## Customize Rainbow Kit
+Once connected, users will see their TANGO token balance and wallet address.
 
-Not only does RainbowKit abstract away the complexities of managing wallet connections, but the library offers several options for customizing UI and functionality to meet the needs of your dApp. You can find a complete list of customization options in the RainbowKit [documentation](https://www.rainbowkit.com/docs/introduction){target=\_blank}. This section covers customizing the **Connect Wallet** button to connect initially to Moonbase Alpha and render it in a custom color. 
+## Customize RainbowKit
+
+Not only does RainbowKit abstract away the complexities of managing wallet connections, but the library offers several options for customizing UI and functionality to meet the needs of your dApp. You can find a complete list of customization options in the RainbowKit [documentation](https://www.rainbowkit.com/docs/introduction){target=\_blank}. This section covers customizing the **Connect Wallet** button to connect initially to Dancebox and render it in a custom color. 
 
 ### Set Custom Initial Chain
 
-RainbowKit will connect by default to the first chain supplied to Wagmi in the config. If you compare the order of chains listed in `wagmi.ts` to those on the **Switch Networks** modal, you will see they are the same. If you wanted to always connect to the TestNet first, a simple fix would be to move `moonbaseAlpha` to the top of the chain list. However, assuming this default behavior will never change is not the most reliable option. 
+RainbowKit will connect by default to the first chain supplied to Wagmi in the config. If you compare the order of chains listed in `wagmi.ts` to those on the **Switch Networks** modal, you will see they are the same. If you wanted to always connect to the Dancebox appchain first, a simple fix would be to ensure it's at the top of the chain list. However, assuming this default behavior will never change is not the most reliable option.
 
-Instead, you can use the `initialChain` prop that is part of the `RainbowKitProvider` element to define which chain the wallet should initially connect to when the user selects **Connect Wallet**. Open your `providers.tsx` file and update the code to configure the `initialChain` prop. You can pass either a chain ID or chain name from the [Wagmi Chains list](https://wagmi.sh/core/api/chains){target=\_blank}.
+Instead, you can use the `initialChain` prop that is part of the `RainbowKitProvider` element to define which chain the wallet should initially connect to when the user selects **Connect Wallet**. Open your `providers.tsx` file and update the code to configure the `initialChain` prop. For your custom Dancebox appchain, you'll pass the chain object you defined earlier:
+
+```Ts title="providers.tsx"
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { WagmiProvider } from 'wagmi';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { config, danceboxChain } from '../src/wagmi'; // Make sure this import matches your file structure
+
+const queryClient = new QueryClient();
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider initialChain={danceboxChain}>
+          {children}
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
+}
+
+```
+
+By setting `initialChain={danceboxChain}`, you ensure that RainbowKit will attempt to connect to the Dancebox appchain first when a user clicks the Connect Wallet button.
 
 ### Define Custom Theme Colors
 
 RainbowKit offers three built-in theme functions: `lightTheme`, `darkTheme`, and `midnightTheme`. These theme functions return a theme object, which you can pass into the `RainbowKitProvider` prop `theme` to set custom colors, border radius, font stack, and overlay blur. Update `providers.tsx` with the following code. Be sure to add `darkTheme` to the `@rainbow-me/rainbowkit`import statement to allow your changes to render correctly. After customizing the initial chain and theme, your `providers.tsx` file should look like the following:
 
+RainbowKit offers three built-in theme functions: `lightTheme`, `darkTheme`, and `midnightTheme`. These theme functions return a theme object, which you can pass into the `RainbowKitProvider` prop `theme` to set custom colors, border radius, font stack, and overlay blur. 
+
 ```js title="providers.tsx"
---8<-- 'code/builders/integrations/wallets/rainbowkit/providers.tsx'
+'use client';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { WagmiProvider } from 'wagmi';
+import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+import { config, danceboxChain } from '../src/wagmi';
+
+const queryClient = new QueryClient();
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider
+          initialChain={danceboxChain}
+          theme={darkTheme({
+            accentColor: '#189B9B', // Tanssi accent color
+            accentColorForeground: 'white',
+            borderRadius: 'medium',
+            fontStack: 'system',
+            overlayBlur: 'small'
+          })}
+        >
+          {children}
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
+}
+
 ```
+This configuration sets a dark theme with custom properties:
+
+- `accentColor`: The main highlight color. We're using Tanssi's accent color (#189B9B), but you can change this to match your dApp's branding.
+- `accentColorForeground`: The text color used on top of the accent color.
+- `borderRadius`: Controls the roundness of UI elements. Options are 'none', 'small', 'medium', or 'large'.
+- `fontStack`: Defines the fonts used. 'system' uses the default system fonts.
+- `overlayBlur`: The blur effect applied to the background when modals are open.
+
+!!! tip
+Experiment with different theme functions (lightTheme, darkTheme, midnightTheme) and color combinations to find the best fit for your dApp's aesthetics.
 
 ## Handle Disconnections
 
@@ -344,7 +403,7 @@ You can now disconnect MetaMask from your dApp and then reconnect to test your c
 
 RainbowKit includes a **Disconnect** button out of the box. To open the modal, select the arrow next to your account number. Click the **Disconnect** button. You should now see **Connect Wallet**; your account information should no longer be visible. 
 
-![Built in Disconnect button](/images/builders/integrations/wallets/rainbowkit/rainbowkit-2.webp)
+![Built in Disconnect button](/images/builders/toolkit/integrations/wallets/rainbowkit/rainbowkit-2.webp)
 
 ### Disconnect from MetaMask Mobile {: #disconnect-from-metamask-mobile }
 
@@ -358,13 +417,14 @@ Some users prefer to disconnect from their mobile wallet rather than use a butto
 
 ## Final Result {: #final-result }
 
-The **Connect Wallet** button on your home page should now render in the color you entered for `accentColor` when customizing the theme. When you click **Connect Wallet**, you will see the same accent color in use. Select MetaMask and sign the transaction to authorize the connection. You should now see **Moonbase Alpha** as the connected network and your DEV token balance for the account balance without manually switching networks. 
+The **Connect Wallet** button on your home page should now render in the color you entered for `accentColor` when customizing the theme. When you click **Connect Wallet**, you will see the same accent color in use. Select MetaMask and sign the transaction to authorize the connection. You should now see the Dancebox appchain as the connected network and your TANGO token balance for the account balance without manually switching networks.
 
-![Theme customization on the user modal](/images/builders/integrations/wallets/rainbowkit/rainbowkit-3.webp)
+
+![Theme customization on the user modal](/images/builders/toolkit/integrations/wallets/rainbowkit/rainbowkit-3.webp)
 
 This guide includes only a few of the customization options available through RainbowKit. You can learn more about the capabilities and options of this library by visiting [RainbowKit Docs](https://www.rainbowkit.com/docs/introduction){target=\_blank}.
 
 You can view the complete example code in the [rainbow-manual-build-demo repository](https://github.com/papermoonio/rainbowkit-manual-build-demo){target=\_blank}
 
---8<-- 'text/_disclaimers/third-party-content.md'
+
 
